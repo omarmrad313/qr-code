@@ -1,0 +1,72 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body { height: 100%; }
+body {
+  background: #0A0A0A;
+  color: #FFFFFF;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+::selection { background: #2A2A2A; color: #fff; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: #333; background-clip: padding-box; border: 2px solid transparent; }
+
+@layer components {
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-canvas transition hover:bg-white/90 active:scale-[.98] disabled:opacity-40 disabled:pointer-events-none;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-surface px-4 py-2 text-sm font-medium text-fg transition hover:border-focus hover:bg-elevated active:scale-[.98] disabled:opacity-40 disabled:pointer-events-none;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-muted transition hover:bg-elevated hover:text-fg disabled:opacity-40 disabled:pointer-events-none;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-muted transition hover:border-red-900/50 hover:bg-red-950/20 hover:text-red-400 disabled:opacity-40 disabled:pointer-events-none;
+  }
+  .icon-btn {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted transition hover:bg-elevated hover:text-fg;
+  }
+  .icon-btn-active {
+    @apply bg-elevated text-fg;
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-fg placeholder-dim transition focus:border-focus focus:outline-none focus:ring-1 focus:ring-focus;
+  }
+  .input-bare {
+    @apply w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-fg outline-none transition hover:border-line focus:border-focus focus:bg-surface;
+  }
+
+  /* Surfaces */
+  .card {
+    @apply rounded-xl border border-line bg-surface;
+  }
+  .card-elevated {
+    @apply rounded-xl border border-line bg-elevated;
+  }
+
+  /* Nav links in sidebars */
+  .nav-link {
+    @apply flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted transition hover:bg-elevated hover:text-fg;
+  }
+  .nav-link-active {
+    @apply bg-elevated text-fg;
+  }
+
+  /* Section labels */
+  .label-eyebrow {
+    @apply text-[10px] font-semibold uppercase tracking-[0.18em] text-dim;
+  }
+}
