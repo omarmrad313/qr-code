@@ -5,11 +5,15 @@ const menu: PublicMenu = {
   name_ar: "كافيه لمار",
   subtitle: "Sample menu preview",
   subtitle_ar: "معاينة قائمة الطعام",
-  cover_image_url:
-    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&h=700&fit=crop",
+  cover_images: [
+    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&h=900&fit=crop",
+    "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=1600&h=900&fit=crop",
+    "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1600&h=900&fit=crop",
+  ],
   background_image_url:
     "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1600&h=900&fit=crop",
   layout_style: "cards",
+  accent_color: "#C99852",
   categories: [
     {
       id: "starters",

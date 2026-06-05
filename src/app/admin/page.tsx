@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { ExternalIcon, PlusIcon } from "@/components/icons";
 import SignOutButton from "./sign-out-button";
+import PublishToggle from "./publish-toggle";
 import type { Menu } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -59,8 +60,13 @@ export default async function AdminHome() {
           <ul className="mt-8 grid gap-3 sm:grid-cols-2">
             {list.map((m) => (
               <li key={m.id} className="card group p-5 transition hover:border-focus">
-                <div className="text-base font-semibold tracking-tightish">{m.name}</div>
-                <div className="mt-0.5 text-xs text-dim">/menu/{m.slug}</div>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="truncate text-base font-semibold tracking-tightish">{m.name}</div>
+                    <div className="mt-0.5 text-xs text-dim">/menu/{m.slug}</div>
+                  </div>
+                  <PublishToggle id={m.id} initial={m.published ?? true} />
+                </div>
                 <div className="mt-5 flex gap-2">
                   <Link href={`/admin/menus/${m.id}`} className="btn-primary flex-1">
                     Open

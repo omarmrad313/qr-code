@@ -8,8 +8,11 @@ export type Menu = {
   subtitle: string | null;
   subtitle_ar: string | null;
   cover_image_url: string | null;
+  cover_images: string[] | null;
   background_image_url: string | null;
   layout_style: LayoutStyle | null;
+  accent_color: string | null;
+  published: boolean | null;
   created_at: string;
   updated_at: string;
 };

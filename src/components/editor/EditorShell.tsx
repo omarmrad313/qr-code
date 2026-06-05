@@ -357,7 +357,11 @@ function SettingsTab({ menu, adapter }: { menu: EditorMenu; adapter: EditorAdapt
         <LayoutPicker menu={menu} adapter={adapter} />
 
         <div className="border-t border-line pt-5">
-          <CoverUploader menu={menu} adapter={adapter} />
+          <CoverSlideshowManager menu={menu} adapter={adapter} />
+        </div>
+
+        <div className="border-t border-line pt-5">
+          <AccentColorPicker menu={menu} adapter={adapter} />
         </div>
 
         <div className="border-t border-line pt-5">
@@ -470,6 +474,120 @@ const PreviewGallery = () => (
     <rect x="6" y="27" width="68" height="18" rx="2" fill="#444" />
   </svg>
 );
+
+function CoverSlideshowManager({ menu, adapter }: { menu: EditorMenu; adapter: EditorAdapter }) {
+  const [uploading, setUploading] = useState(false);
+
+  async function onFile(file?: File) {
+    if (!file) return;
+    setUploading(true);
+    try {
+      await adapter.addCoverImage(file);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <div>
+      <label className="text-xs font-medium text-muted">Cover images (slideshow)</label>
+      <p className="mt-0.5 text-xs text-dim">
+        Add one or more — they'll auto-rotate in the banner.
+      </p>
+
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        {menu.cover_images.map((url) => (
+          <div key={url} className="group relative aspect-video overflow-hidden rounded-lg border border-line">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={url} alt="" className="h-full w-full object-cover" />
+            <button
+              onClick={() => {
+                if (confirm("Remove this image?")) adapter.removeCoverImage(url);
+              }}
+              className="absolute right-1 top-1 hidden h-6 w-6 items-center justify-center rounded-full bg-canvas/80 text-fg group-hover:flex"
+              title="Remove"
+            >
+              ×
+            </button>
+          </div>
+        ))}
+
+        <label className="flex aspect-video cursor-pointer items-center justify-center rounded-lg border border-dashed border-line bg-surface text-xs text-muted hover:border-focus hover:text-fg">
+          {uploading ? "Uploading…" : "+ Add"}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => onFile(e.target.files?.[0] ?? undefined)}
+            className="hidden"
+          />
+        </label>
+      </div>
+    </div>
+  );
+}
+
+const ACCENT_PRESETS = [
+  "#C99852", // gold (default)
+  "#DC2626", // red
+  "#EA580C", // orange
+  "#16A34A", // green
+  "#0EA5E9", // sky
+  "#2563EB", // blue
+  "#9333EA", // purple
+  "#EC4899", // pink
+  "#FFFFFF", // white
+];
+
+function AccentColorPicker({ menu, adapter }: { menu: EditorMenu; adapter: EditorAdapter }) {
+  const [custom, setCustom] = useState(menu.accent_color);
+
+  return (
+    <div>
+      <label className="text-xs font-medium text-muted">Accent color</label>
+      <p className="mt-0.5 text-xs text-dim">Used for the active category pill and prices.</p>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        {ACCENT_PRESETS.map((c) => {
+          const active = menu.accent_color.toLowerCase() === c.toLowerCase();
+          return (
+            <button
+              key={c}
+              onClick={() => {
+                adapter.updateMenu({ accent_color: c });
+                setCustom(c);
+              }}
+              style={{ backgroundColor: c }}
+              className={`h-8 w-8 rounded-full border-2 transition ${
+                active ? "border-fg scale-110" : "border-line hover:border-muted"
+              }`}
+              title={c}
+            />
+          );
+        })}
+      </div>
+
+      <div className="mt-3 flex items-center gap-2">
+        <input
+          type="color"
+          value={custom}
+          onChange={(e) => setCustom(e.target.value)}
+          onBlur={() => adapter.updateMenu({ accent_color: custom })}
+          className="h-8 w-12 cursor-pointer rounded border border-line bg-transparent"
+        />
+        <input
+          type="text"
+          value={custom}
+          onChange={(e) => setCustom(e.target.value)}
+          onBlur={() => {
+            if (/^#[0-9a-f]{6}$/i.test(custom)) adapter.updateMenu({ accent_color: custom });
+          }}
+          className="input flex-1 font-mono text-sm"
+          placeholder="#C99852"
+        />
+      </div>
+    </div>
+  );
+}
 
 function BackgroundUploader({ menu, adapter }: { menu: EditorMenu; adapter: EditorAdapter }) {
   const [uploading, setUploading] = useState(false);

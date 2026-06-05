@@ -199,6 +199,26 @@ export default function RealEditor({
       patchMenu((m) => ({ ...m, cover_image_url: null }));
       supabase.from("menus").update({ cover_image_url: null }).eq("id", menu.id).then(() => router.refresh());
     },
+    async addCoverImage(file) {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `covers/${menu.id}/${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+      const { error } = await supabase.storage
+        .from(BUCKET)
+        .upload(path, file, { upsert: true, contentType: file.type });
+      if (error) throw error;
+      const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(path);
+      const next = [...menu.cover_images, pub.publicUrl];
+      patchMenu((m) => ({ ...m, cover_images: next }));
+      await supabase.from("menus").update({ cover_images: next }).eq("id", menu.id);
+      router.refresh();
+      return pub.publicUrl;
+    },
+    async removeCoverImage(url) {
+      const next = menu.cover_images.filter((u) => u !== url);
+      patchMenu((m) => ({ ...m, cover_images: next }));
+      await supabase.from("menus").update({ cover_images: next }).eq("id", menu.id);
+      router.refresh();
+    },
     async uploadBackground(file) {
       const ext = file.name.split(".").pop() || "jpg";
       const path = `backgrounds/${menu.id}/${Date.now()}.${ext}`;

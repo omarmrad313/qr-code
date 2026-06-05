@@ -26,9 +26,10 @@ export type PublicMenu = {
   name_ar: string | null;
   subtitle: string | null;
   subtitle_ar: string | null;
-  cover_image_url: string | null;
+  cover_images: string[];
   background_image_url: string | null;
   layout_style: LayoutStyle;
+  accent_color: string;
   categories: PublicCategory[];
 };
 
@@ -50,6 +51,7 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
     cats.some((c) => c.name_ar || c.items.some((i) => i.name_ar || i.description_ar));
 
   const layout: LayoutStyle = menu.layout_style || "cards";
+  const accent = menu.accent_color || "#C99852";
 
   // Spy: highlight the active category in the sticky pill bar
   useEffect(() => {
@@ -88,30 +90,14 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
       }}
     >
       <div className="mx-auto max-w-3xl px-4 pb-24 md:px-6">
-        {/* Inset hero/cover */}
+        {/* Inset hero/cover (slideshow) */}
         <header className="pt-5">
-          {menu.cover_image_url ? (
-            <div className="relative overflow-hidden rounded-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={menu.cover_image_url}
-                alt=""
-                className="aspect-[16/9] w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-canvas/30 to-transparent" />
-              {(menu.name || menu.name_ar) && (
-                <div className="absolute inset-x-0 bottom-0 p-5">
-                  <h1 className="text-2xl font-extrabold tracking-tighter2 drop-shadow md:text-3xl">
-                    {pick(menu.name, menu.name_ar, lang)}
-                  </h1>
-                  {(menu.subtitle || menu.subtitle_ar) && (
-                    <p className="mt-1 text-sm text-muted drop-shadow">
-                      {pick(menu.subtitle, menu.subtitle_ar, lang)}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
+          {menu.cover_images.length > 0 ? (
+            <CoverSlideshow
+              images={menu.cover_images}
+              title={pick(menu.name, menu.name_ar, lang)}
+              subtitle={pick(menu.subtitle, menu.subtitle_ar, lang)}
+            />
           ) : (
             <div className="py-8 text-center">
               <p className="label-eyebrow text-muted">
@@ -139,9 +125,14 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
                   key={c.id}
                   href={`#cat-${c.id}`}
                   onClick={() => setActiveCat(c.id)}
+                  style={
+                    isActive
+                      ? { backgroundColor: accent, color: "#0A0A0A" }
+                      : undefined
+                  }
                   className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
                     isActive
-                      ? "bg-gold text-canvas shadow-sm"
+                      ? "shadow-sm"
                       : "bg-elevated/80 text-muted hover:bg-elevated hover:text-fg"
                   }`}
                 >
@@ -170,11 +161,11 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
                 </h2>
 
                 {layout === "list" ? (
-                  <ListLayout items={c.items} lang={lang} />
+                  <ListLayout items={c.items} lang={lang} accent={accent} />
                 ) : layout === "gallery" ? (
-                  <GalleryLayout items={c.items} lang={lang} />
+                  <GalleryLayout items={c.items} lang={lang} accent={accent} />
                 ) : (
-                  <CardsLayout items={c.items} lang={lang} />
+                  <CardsLayout items={c.items} lang={lang} accent={accent} />
                 )}
               </section>
             ))
@@ -199,9 +190,66 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
   );
 }
 
+/* ─── Cover slideshow ─────────────────────────────────────── */
+
+function CoverSlideshow({
+  images,
+  title,
+  subtitle,
+}: {
+  images: string[];
+  title: string;
+  subtitle: string;
+}) {
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    if (images.length < 2) return;
+    const t = setInterval(() => setIdx((i) => (i + 1) % images.length), 4500);
+    return () => clearInterval(t);
+  }, [images.length]);
+
+  return (
+    <div className="relative aspect-[16/9] overflow-hidden rounded-2xl">
+      {images.map((src, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={src + i}
+          src={src}
+          alt=""
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out ${
+            i === idx ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      ))}
+      <div className="absolute inset-0 bg-gradient-to-t from-canvas/40 to-transparent" />
+      {(title || subtitle) && (
+        <div className="absolute inset-x-0 bottom-0 p-5">
+          <h1 className="text-2xl font-extrabold tracking-tighter2 drop-shadow md:text-3xl">{title}</h1>
+          {subtitle && <p className="mt-1 text-sm text-muted drop-shadow">{subtitle}</p>}
+        </div>
+      )}
+      {images.length > 1 && (
+        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIdx(i)}
+              className={`h-1.5 rounded-full transition-all ${
+                i === idx ? "w-6 bg-white" : "w-1.5 bg-white/40"
+              }`}
+              aria-label={`Slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ─── Layouts ─────────────────────────────────────────────── */
 
-function CardsLayout({ items, lang }: { items: PublicItem[]; lang: Lang }) {
+function CardsLayout({ items, lang, accent }: { items: PublicItem[]; lang: Lang; accent: string }) {
   return (
     <ul className="mt-5 grid grid-cols-2 gap-3 md:gap-4">
       {items.map((p) => (
@@ -220,7 +268,7 @@ function CardsLayout({ items, lang }: { items: PublicItem[]; lang: Lang }) {
             <h3 className="text-sm font-bold leading-tight md:text-base">
               {pick(p.name, p.name_ar, lang)}
             </h3>
-            <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} />
+            <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} accent={accent} />
             {(p.description || p.description_ar) && (
               <p className="mt-1 line-clamp-2 text-xs text-muted">
                 {pick(p.description, p.description_ar, lang)}
@@ -233,7 +281,7 @@ function CardsLayout({ items, lang }: { items: PublicItem[]; lang: Lang }) {
   );
 }
 
-function ListLayout({ items, lang }: { items: PublicItem[]; lang: Lang }) {
+function ListLayout({ items, lang, accent }: { items: PublicItem[]; lang: Lang; accent: string }) {
   return (
     <ul className="mt-5 space-y-5">
       {items.map((p) => (
@@ -256,7 +304,7 @@ function ListLayout({ items, lang }: { items: PublicItem[]; lang: Lang }) {
                 {pick(p.name, p.name_ar, lang)}
               </h3>
               <div className="flex-1 border-b border-dotted border-line" />
-              <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} />
+              <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} accent={accent} />
             </div>
             {(p.description || p.description_ar) && (
               <p className="mt-1 text-sm leading-relaxed text-muted">
@@ -270,7 +318,7 @@ function ListLayout({ items, lang }: { items: PublicItem[]; lang: Lang }) {
   );
 }
 
-function GalleryLayout({ items, lang }: { items: PublicItem[]; lang: Lang }) {
+function GalleryLayout({ items, lang, accent }: { items: PublicItem[]; lang: Lang; accent: string }) {
   return (
     <ul className="mt-5 space-y-4">
       {items.map((p) => (
@@ -285,7 +333,7 @@ function GalleryLayout({ items, lang }: { items: PublicItem[]; lang: Lang }) {
                   <h3 className="text-2xl font-bold tracking-tighter2">
                     {pick(p.name, p.name_ar, lang)}
                   </h3>
-                  <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} large />
+                  <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} accent={accent} large />
                 </div>
                 {(p.description || p.description_ar) && (
                   <p className="mt-1 text-sm leading-relaxed text-muted">
@@ -300,7 +348,7 @@ function GalleryLayout({ items, lang }: { items: PublicItem[]; lang: Lang }) {
                 <h3 className="text-2xl font-bold tracking-tighter2">
                   {pick(p.name, p.name_ar, lang)}
                 </h3>
-                <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} large />
+                <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} accent={accent} large />
               </div>
               {(p.description || p.description_ar) && (
                 <p className="mt-1 text-sm leading-relaxed text-muted">
@@ -321,27 +369,25 @@ function PriceTag({
   usd,
   lbp,
   lang,
+  accent,
   large,
 }: {
   usd: number;
   lbp: number | null;
   lang: Lang;
+  accent: string;
   large?: boolean;
 }) {
   const lbpLabel = lang === "ar" ? "ل.ل" : "L.L";
-  // Prefer LBP if entered; otherwise show USD.
   const primaryLbp = lbp != null;
   return (
     <div className="mt-1">
-      {primaryLbp ? (
-        <div className={`font-bold tabular-nums text-gold ${large ? "text-xl" : "text-sm md:text-base"}`}>
-          {lbp.toLocaleString("en-US")} {lbpLabel}
-        </div>
-      ) : (
-        <div className={`font-bold tabular-nums text-gold ${large ? "text-xl" : "text-sm md:text-base"}`}>
-          ${usd.toFixed(2)}
-        </div>
-      )}
+      <div
+        style={{ color: accent }}
+        className={`font-bold tabular-nums ${large ? "text-xl" : "text-sm md:text-base"}`}
+      >
+        {primaryLbp ? `${lbp.toLocaleString("en-US")} ${lbpLabel}` : `$${usd.toFixed(2)}`}
+      </div>
       {primaryLbp && usd > 0 && (
         <div className={`tabular-nums text-dim ${large ? "text-xs" : "text-[11px]"}`}>
           ${usd.toFixed(2)}

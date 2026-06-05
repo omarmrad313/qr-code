@@ -34,14 +34,33 @@ export default async function PublicMenuPage({ params }: { params: { slug: strin
   const cats = (categories ?? []) as Category[];
   const prods = (products ?? []) as Product[];
 
+  // Hide if unpublished
+  if (m.published === false) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-canvas px-6 text-center text-fg">
+        <p className="label-eyebrow text-muted">Unavailable</p>
+        <h1 className="mt-3 text-3xl font-bold tracking-tighter2">This menu is offline.</h1>
+        <p className="mt-2 text-muted">Please check back later.</p>
+      </div>
+    );
+  }
+
+  const coverImages =
+    m.cover_images && m.cover_images.length > 0
+      ? m.cover_images
+      : m.cover_image_url
+      ? [m.cover_image_url]
+      : [];
+
   const publicMenu: PublicMenu = {
     name: m.name,
     name_ar: m.name_ar,
     subtitle: m.subtitle,
     subtitle_ar: m.subtitle_ar,
-    cover_image_url: m.cover_image_url,
+    cover_images: coverImages,
     background_image_url: m.background_image_url ?? null,
-    layout_style: (m.layout_style as any) ?? "list",
+    layout_style: (m.layout_style as any) ?? "cards",
+    accent_color: m.accent_color ?? "#C99852",
     categories: cats
       .map<PublicCategory>((c) => ({
         id: c.id,

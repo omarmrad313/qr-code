@@ -48,8 +48,14 @@ export default async function EditMenuPage({
     subtitle_ar: menu.subtitle_ar ?? null,
     slug: menu.slug,
     cover_image_url: menu.cover_image_url ?? null,
+    cover_images:
+      (menu.cover_images && menu.cover_images.length > 0)
+        ? menu.cover_images
+        : (menu.cover_image_url ? [menu.cover_image_url] : []),
     background_image_url: menu.background_image_url ?? null,
-    layout_style: (menu.layout_style as "list" | "cards" | "gallery") ?? "list",
+    layout_style: (menu.layout_style as "list" | "cards" | "gallery") ?? "cards",
+    accent_color: menu.accent_color ?? "#C99852",
+    published: menu.published ?? true,
     categories: (categoriesRaw ?? []).map((c): EditorCategory => ({
       id: c.id,
       name: c.name,

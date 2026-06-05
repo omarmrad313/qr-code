@@ -27,8 +27,11 @@ export type EditorMenu = {
   subtitle_ar: string | null;
   slug: string;
   cover_image_url: string | null;
+  cover_images: string[];
   background_image_url: string | null;
   layout_style: LayoutStyle;
+  accent_color: string;
+  published: boolean;
   categories: EditorCategory[];
 };
 
@@ -38,7 +41,7 @@ export type Selection =
   | { type: "product"; id: string }
   | null;
 
-export type MenuPatch = Partial<Pick<EditorMenu, "name" | "name_ar" | "subtitle" | "subtitle_ar" | "layout_style">>;
+export type MenuPatch = Partial<Pick<EditorMenu, "name" | "name_ar" | "subtitle" | "subtitle_ar" | "layout_style" | "accent_color" | "published">>;
 export type CategoryPatch = Partial<Pick<EditorCategory, "name" | "name_ar">>;
 
 export interface EditorAdapter {
@@ -52,8 +55,10 @@ export interface EditorAdapter {
   deleteProduct(id: string): void;
   reorderProducts(categoryId: string, orderedIds: string[]): void;
   uploadImage(productId: string, file: File): Promise<string>;
-  uploadCover(file: File): Promise<string>;
+  uploadCover(file: File): Promise<string>;          // single (legacy)
   clearCover(): void;
+  addCoverImage(file: File): Promise<string>;        // append to slideshow
+  removeCoverImage(url: string): void;
   uploadBackground(file: File): Promise<string>;
   clearBackground(): void;
 }
