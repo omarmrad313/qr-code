@@ -78,11 +78,11 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
   return (
     <div
       dir={dir}
-      className="relative min-h-screen text-fg"
+      className="relative min-h-screen text-neutral-900"
       style={{
-        backgroundColor: "#0A0A0A",
+        backgroundColor: "#FFFFFF",
         backgroundImage: menu.background_image_url
-          ? `linear-gradient(rgba(10,10,10,0.78), rgba(10,10,10,0.78)), url(${menu.background_image_url})`
+          ? `linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.88)), url(${menu.background_image_url})`
           : undefined,
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -100,14 +100,14 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
             />
           ) : (
             <div className="py-8 text-center">
-              <p className="label-eyebrow text-muted">
+              <p className="label-eyebrow text-neutral-500">
                 {lang === "ar" ? "قائمة الطعام" : "Menu"}
               </p>
-              <h1 className="mt-2 text-4xl font-extrabold tracking-tighter2 md:text-5xl">
+              <h1 className="mt-2 text-4xl font-extrabold tracking-tighter2 text-neutral-900 md:text-5xl">
                 {pick(menu.name, menu.name_ar, lang)}
               </h1>
               {(menu.subtitle || menu.subtitle_ar) && (
-                <p className="mt-2 text-sm text-muted">
+                <p className="mt-2 text-sm text-neutral-500">
                   {pick(menu.subtitle, menu.subtitle_ar, lang)}
                 </p>
               )}
@@ -127,13 +127,13 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
                   onClick={() => setActiveCat(c.id)}
                   style={
                     isActive
-                      ? { backgroundColor: accent, color: "#0A0A0A" }
+                      ? { backgroundColor: accent, color: "#FFFFFF" }
                       : undefined
                   }
                   className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
                     isActive
                       ? "shadow-sm"
-                      : "bg-elevated/80 text-muted hover:bg-elevated hover:text-fg"
+                      : "bg-neutral-200 text-neutral-700 hover:bg-neutral-300 hover:text-neutral-900"
                   }`}
                 >
                   {pick(c.name, c.name_ar, lang)}
@@ -154,9 +154,9 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
               <section
                 key={c.id}
                 id={`cat-${c.id}`}
-                className="scroll-mt-4 rounded-3xl bg-surface/40 p-5 ring-1 ring-white/5 backdrop-blur md:p-6"
+                className="scroll-mt-4 rounded-3xl bg-neutral-300/80 p-5 text-neutral-900 backdrop-blur md:p-6"
               >
-                <h2 className="text-2xl font-extrabold tracking-tighter2 md:text-3xl">
+                <h2 className="text-2xl font-extrabold tracking-tighter2 text-neutral-900 md:text-3xl">
                   {pick(c.name, c.name_ar, lang)}
                 </h2>
 
@@ -172,7 +172,7 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
           )}
         </main>
 
-        <footer className="pt-12 text-center text-[10px] uppercase tracking-[0.25em] text-dim">
+        <footer className="pt-12 text-center text-[10px] uppercase tracking-[0.25em] text-neutral-400">
           Powered by QR Menu
         </footer>
       </div>
@@ -181,7 +181,7 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
       {hasArabic && (
         <button
           onClick={() => setLang((l) => (l === "en" ? "ar" : "en"))}
-          className="fixed bottom-6 right-6 z-30 rounded-full bg-fg px-5 py-2.5 text-sm font-semibold text-canvas shadow-lg transition active:scale-95"
+          className="fixed bottom-6 right-6 z-30 rounded-full bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white shadow-xl transition active:scale-95"
         >
           {lang === "en" ? "العربية" : "English"}
         </button>
@@ -254,23 +254,23 @@ function CardsLayout({ items, lang, accent }: { items: PublicItem[]; lang: Lang;
     <ul className="mt-5 grid grid-cols-2 gap-3 md:gap-4">
       {items.map((p) => (
         <li key={p.id} className="space-y-2.5">
-          <div className="aspect-square overflow-hidden rounded-2xl bg-elevated">
+          <div className="aspect-square overflow-hidden rounded-2xl bg-neutral-100">
             {p.image_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={p.image_url} alt="" className="h-full w-full object-cover" />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
-                <span className="text-xs text-dim">{lang === "ar" ? "بدون صورة" : "No Image"}</span>
+                <span className="text-xs text-neutral-400">{lang === "ar" ? "بدون صورة" : "No Image"}</span>
               </div>
             )}
           </div>
           <div>
-            <h3 className="text-sm font-bold leading-tight md:text-base">
+            <h3 className="text-sm font-bold leading-tight text-neutral-900 md:text-base">
               {pick(p.name, p.name_ar, lang)}
             </h3>
             <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} accent={accent} />
             {(p.description || p.description_ar) && (
-              <p className="mt-1 line-clamp-2 text-xs text-muted">
+              <p className="mt-1 line-clamp-2 text-xs text-neutral-900">
                 {pick(p.description, p.description_ar, lang)}
               </p>
             )}
@@ -294,20 +294,20 @@ function ListLayout({ items, lang, accent }: { items: PublicItem[]; lang: Lang; 
               className="h-20 w-20 shrink-0 rounded-xl object-cover"
             />
           ) : (
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-elevated text-[10px] text-dim">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-neutral-100 text-[10px] text-neutral-400">
               {lang === "ar" ? "بدون صورة" : "No Image"}
             </div>
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-baseline justify-between gap-3">
-              <h3 className="text-lg font-bold tracking-tightish">
+              <h3 className="text-lg font-bold tracking-tightish text-neutral-900">
                 {pick(p.name, p.name_ar, lang)}
               </h3>
-              <div className="flex-1 border-b border-dotted border-line" />
+              <div className="flex-1 border-b border-dotted border-neutral-300" />
               <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} accent={accent} />
             </div>
             {(p.description || p.description_ar) && (
-              <p className="mt-1 text-sm leading-relaxed text-muted">
+              <p className="mt-1 text-sm leading-relaxed text-neutral-900">
                 {pick(p.description, p.description_ar, lang)}
               </p>
             )}
@@ -322,13 +322,13 @@ function GalleryLayout({ items, lang, accent }: { items: PublicItem[]; lang: Lan
   return (
     <ul className="mt-5 space-y-4">
       {items.map((p) => (
-        <li key={p.id} className="overflow-hidden rounded-2xl bg-elevated">
+        <li key={p.id} className="overflow-hidden rounded-2xl bg-neutral-100">
           {p.image_url ? (
             <div className="relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={p.image_url} alt="" className="aspect-[21/9] w-full object-cover" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-canvas/90 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5">
+              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                 <div className="flex items-baseline justify-between gap-3">
                   <h3 className="text-2xl font-bold tracking-tighter2">
                     {pick(p.name, p.name_ar, lang)}
@@ -336,14 +336,14 @@ function GalleryLayout({ items, lang, accent }: { items: PublicItem[]; lang: Lan
                   <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} accent={accent} large />
                 </div>
                 {(p.description || p.description_ar) && (
-                  <p className="mt-1 text-sm leading-relaxed text-muted">
+                  <p className="mt-1 text-sm leading-relaxed text-white/80">
                     {pick(p.description, p.description_ar, lang)}
                   </p>
                 )}
               </div>
             </div>
           ) : (
-            <div className="p-5">
+            <div className="p-5 text-neutral-900">
               <div className="flex items-baseline justify-between gap-3">
                 <h3 className="text-2xl font-bold tracking-tighter2">
                   {pick(p.name, p.name_ar, lang)}
@@ -351,7 +351,7 @@ function GalleryLayout({ items, lang, accent }: { items: PublicItem[]; lang: Lan
                 <PriceTag usd={p.price} lbp={p.price_lbp} lang={lang} accent={accent} large />
               </div>
               {(p.description || p.description_ar) && (
-                <p className="mt-1 text-sm leading-relaxed text-muted">
+                <p className="mt-1 text-sm leading-relaxed text-neutral-900">
                   {pick(p.description, p.description_ar, lang)}
                 </p>
               )}
@@ -382,14 +382,11 @@ function PriceTag({
   const primaryLbp = lbp != null;
   return (
     <div className="mt-1">
-      <div
-        style={{ color: accent }}
-        className={`font-bold tabular-nums ${large ? "text-xl" : "text-sm md:text-base"}`}
-      >
+      <div className={`font-bold tabular-nums text-neutral-900 ${large ? "text-xl" : "text-sm md:text-base"}`}>
         {primaryLbp ? `${lbp.toLocaleString("en-US")} ${lbpLabel}` : `$${usd.toFixed(2)}`}
       </div>
       {primaryLbp && usd > 0 && (
-        <div className={`tabular-nums text-dim ${large ? "text-xs" : "text-[11px]"}`}>
+        <div className={`tabular-nums text-neutral-700 ${large ? "text-xs" : "text-[11px]"}`}>
           ${usd.toFixed(2)}
         </div>
       )}
