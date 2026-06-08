@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { LayoutStyle } from "@/types";
 
 export type PublicItem = {
@@ -45,6 +45,20 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
   );
   const dir = lang === "ar" ? "rtl" : "ltr";
 
+  // Force the body background to white for the public menu so iOS overscroll,
+  // bottom safe-area, and short pages all render true white (instead of the
+  // admin's dark canvas bleeding through).
+  useEffect(() => {
+    const prevBody = document.body.style.background;
+    const prevHtml = document.documentElement.style.background;
+    document.body.style.background = "#FFFFFF";
+    document.documentElement.style.background = "#FFFFFF";
+    return () => {
+      document.body.style.background = prevBody;
+      document.documentElement.style.background = prevHtml;
+    };
+  }, []);
+
   const cats = menu.categories;
   const hasArabic =
     !!menu.name_ar ||
@@ -53,11 +67,15 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
   const layout: LayoutStyle = menu.layout_style || "cards";
   const accent = menu.accent_color || "#C99852";
 
-  // Spy: highlight the active category in the sticky pill bar
+  // Spy: highlight the active category in the sticky pill bar as you scroll.
+  // Paused briefly after a pill click so the click's chosen state isn't
+  // immediately overridden while smooth-scrolling.
+  const lockUntil = useRef(0);
   useEffect(() => {
     const ids = cats.map((c) => `cat-${c.id}`);
     const observer = new IntersectionObserver(
       (entries) => {
+        if (Date.now() < lockUntil.current) return;
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
@@ -82,7 +100,7 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
       style={{
         backgroundColor: "#FFFFFF",
         backgroundImage: menu.background_image_url
-          ? `linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.88)), url(${menu.background_image_url})`
+          ? `url(${menu.background_image_url})`
           : undefined,
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -115,29 +133,39 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
           )}
         </header>
 
-        {/* Category pills */}
-        <nav className="mt-5 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+        {/* Category pills — sticky so they stay reachable while scrolling */}
+        <nav
+          className="sticky top-0 z-20 -mx-4 mt-5 overflow-x-auto bg-white/95 px-4 py-2 backdrop-blur md:-mx-6 md:px-6"
+          style={{
+            scrollbarWidth: "none",
+            WebkitOverflowScrolling: "touch",
+            touchAction: "pan-x",
+          }}
+        >
           <div className="flex gap-2 pb-1">
             {cats.map((c) => {
               const isActive = activeCat === c.id;
               return (
-                <a
+                <button
                   key={c.id}
-                  href={`#cat-${c.id}`}
-                  onClick={() => setActiveCat(c.id)}
-                  style={
+                  type="button"
+                  onClick={() => {
+                    setActiveCat(c.id);
+                    lockUntil.current = Date.now() + 900;
+                    const el = document.getElementById(`cat-${c.id}`);
+                    if (el) {
+                      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+                      window.scrollTo({ top, behavior: "smooth" });
+                    }
+                  }}
+                  className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors duration-150 active:scale-[0.96] ${
                     isActive
-                      ? { backgroundColor: accent, color: "#FFFFFF" }
-                      : undefined
-                  }
-                  className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
-                    isActive
-                      ? "shadow-sm"
-                      : "bg-neutral-200 text-neutral-700 hover:bg-neutral-300 hover:text-neutral-900"
+                      ? "bg-neutral-900 text-white shadow-md"
+                      : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
                   }`}
                 >
                   {pick(c.name, c.name_ar, lang)}
-                </a>
+                </button>
               );
             })}
           </div>
@@ -154,7 +182,7 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
               <section
                 key={c.id}
                 id={`cat-${c.id}`}
-                className="scroll-mt-4 rounded-3xl bg-neutral-300/80 p-5 text-neutral-900 backdrop-blur md:p-6"
+                className="scroll-mt-20 rounded-3xl bg-neutral-300/80 p-5 text-neutral-900 backdrop-blur md:p-6"
               >
                 <h2 className="text-2xl font-extrabold tracking-tighter2 text-neutral-900 md:text-3xl">
                   {pick(c.name, c.name_ar, lang)}
