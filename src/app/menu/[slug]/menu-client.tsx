@@ -96,18 +96,22 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
   return (
     <div
       dir={dir}
-      className="relative min-h-screen text-neutral-900"
-      style={{
-        backgroundColor: "#FFFFFF",
-        backgroundImage: menu.background_image_url
-          ? `url(${menu.background_image_url})`
-          : undefined,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
+      className="relative min-h-screen bg-white text-neutral-900"
     >
-      <div className="mx-auto max-w-3xl px-4 pb-24 md:px-6">
+      {/* Background image — fixed <img> instead of CSS bg-attachment which is
+          buggy on iOS Safari (was dimming uploads). z-0 sits above the parent
+          bg-white so the image is fully visible; content gets z-10. */}
+      {menu.background_image_url && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={menu.background_image_url}
+          alt=""
+          aria-hidden
+          className="pointer-events-none fixed inset-0 h-full w-full object-cover"
+          style={{ zIndex: 0 }}
+        />
+      )}
+      <div className="relative z-10 mx-auto max-w-3xl px-4 pb-24 md:px-6">
         {/* Inset hero/cover (slideshow) */}
         <header className="pt-5">
           {menu.cover_images.length > 0 ? (
