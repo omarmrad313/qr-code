@@ -30,6 +30,7 @@ export type PublicMenu = {
   background_image_url: string | null;
   layout_style: LayoutStyle;
   accent_color: string;
+  show_menu_name: boolean;
   categories: PublicCategory[];
 };
 
@@ -117,10 +118,12 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
           {menu.cover_images.length > 0 ? (
             <CoverSlideshow
               images={menu.cover_images}
-              title={pick(menu.name, menu.name_ar, lang)}
-              subtitle={pick(menu.subtitle, menu.subtitle_ar, lang)}
+              title={menu.show_menu_name ? pick(menu.name, menu.name_ar, lang) : ""}
+              subtitle={
+                menu.show_menu_name ? pick(menu.subtitle, menu.subtitle_ar, lang) : ""
+              }
             />
-          ) : (
+          ) : menu.show_menu_name ? (
             <div className="py-8 text-center">
               <p className="label-eyebrow text-neutral-500">
                 {lang === "ar" ? "قائمة الطعام" : "Menu"}
@@ -134,7 +137,7 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
                 </p>
               )}
             </div>
-          )}
+          ) : null}
         </header>
 
         {/* Category pills — sticky so they stay reachable while scrolling */}
@@ -186,7 +189,11 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
               <section
                 key={c.id}
                 id={`cat-${c.id}`}
-                className="scroll-mt-20 rounded-3xl bg-neutral-300/80 p-5 text-neutral-900 backdrop-blur md:p-6"
+                className={
+                  layout === "elegant"
+                    ? "scroll-mt-20 py-2"
+                    : "scroll-mt-20 rounded-3xl bg-neutral-300/80 p-5 text-neutral-900 backdrop-blur md:p-6"
+                }
               >
                 <h2 className="text-2xl font-extrabold tracking-tighter2 text-neutral-900 md:text-3xl">
                   {pick(c.name, c.name_ar, lang)}
@@ -196,6 +203,8 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
                   <ListLayout items={c.items} lang={lang} accent={accent} />
                 ) : layout === "gallery" ? (
                   <GalleryLayout items={c.items} lang={lang} accent={accent} />
+                ) : layout === "elegant" ? (
+                  <ElegantLayout items={c.items} lang={lang} accent={accent} />
                 ) : (
                   <CardsLayout items={c.items} lang={lang} accent={accent} />
                 )}
@@ -389,6 +398,46 @@ function GalleryLayout({ items, lang, accent }: { items: PublicItem[]; lang: Lan
               )}
             </div>
           )}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ElegantLayout({ items, lang, accent }: { items: PublicItem[]; lang: Lang; accent: string }) {
+  return (
+    <ul className="mt-4 divide-y divide-neutral-200">
+      {items.map((p) => (
+        <li key={p.id} className="flex items-center gap-4 py-5">
+          {p.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={p.image_url}
+              alt=""
+              className="h-20 w-20 shrink-0 rounded-2xl object-cover"
+            />
+          ) : (
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-neutral-100 text-[10px] text-neutral-400">
+              {lang === "ar" ? "بدون صورة" : "No Image"}
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-baseline gap-2">
+              <h3 className="text-lg font-semibold text-neutral-900">
+                {pick(p.name, p.name_ar, lang)}
+              </h3>
+              {(p.description || p.description_ar) && (
+                <span className="text-[11px] uppercase tracking-widest text-neutral-500">
+                  {pick(p.description, p.description_ar, lang)}
+                </span>
+              )}
+            </div>
+            <div className="mt-2 text-base font-medium tabular-nums text-neutral-900">
+              {p.price_lbp != null
+                ? `${lang === "ar" ? "ل.ل" : "L£"}${p.price_lbp.toLocaleString("en-US")}`
+                : `$${p.price.toFixed(2)}`}
+            </div>
+          </div>
         </li>
       ))}
     </ul>

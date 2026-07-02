@@ -24,12 +24,24 @@ export default function Inspector({
   onClose: () => void;
   mobileOpen: boolean;
 }) {
+  // key={id} forces React to remount the inspector when you switch items,
+  // so uncontrolled defaultValue inputs reset with the new product's values.
   const body = selectedProduct ? (
-    <ProductInspector product={selectedProduct} adapter={adapter} setSelection={setSelection} />
+    <ProductInspector
+      key={selectedProduct.id}
+      product={selectedProduct}
+      adapter={adapter}
+      setSelection={setSelection}
+    />
   ) : selectedCategory ? (
-    <CategoryInspector category={selectedCategory} adapter={adapter} setSelection={setSelection} />
+    <CategoryInspector
+      key={selectedCategory.id}
+      category={selectedCategory}
+      adapter={adapter}
+      setSelection={setSelection}
+    />
   ) : (
-    <MenuInspector menu={menu} adapter={adapter} />
+    <MenuInspector key="menu" menu={menu} adapter={adapter} />
   );
 
   return (

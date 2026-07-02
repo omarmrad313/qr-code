@@ -1,4 +1,4 @@
-export type LayoutStyle = "list" | "cards" | "gallery";
+export type LayoutStyle = "list" | "cards" | "gallery" | "elegant";
 
 export type Menu = {
   id: string;
@@ -13,6 +13,7 @@ export type Menu = {
   layout_style: LayoutStyle | null;
   accent_color: string | null;
   published: boolean | null;
+  show_menu_name: boolean | null;
   created_at: string;
   updated_at: string;
 };

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ExternalIcon, PlusIcon } from "@/components/icons";
 import SignOutButton from "./sign-out-button";
 import PublishToggle from "./publish-toggle";
+import DeleteMenuButton from "./delete-menu-button";
 import type { Menu } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -79,6 +80,7 @@ export default async function AdminHome() {
                   >
                     <ExternalIcon />
                   </Link>
+                  <DeleteMenuButton id={m.id} name={m.name} />
                 </div>
               </li>
             ))}

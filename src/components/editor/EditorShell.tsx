@@ -378,6 +378,15 @@ function SettingsTab({ menu, adapter }: { menu: EditorMenu; adapter: EditorAdapt
             }}
             className="input mt-1.5"
           />
+          <label className="mt-3 flex cursor-pointer items-center justify-between rounded-lg border border-line bg-surface px-3 py-2.5">
+            <span className="text-sm">Show name in menu header</span>
+            <input
+              type="checkbox"
+              checked={menu.show_menu_name}
+              onChange={(e) => adapter.updateMenu({ show_menu_name: e.target.checked })}
+              className="h-4 w-4"
+            />
+          </label>
         </div>
         <div>
           <label className="text-xs font-medium text-muted">URL slug</label>
@@ -397,11 +406,11 @@ function SettingsTab({ menu, adapter }: { menu: EditorMenu; adapter: EditorAdapt
 }
 
 function LayoutPicker({ menu, adapter }: { menu: EditorMenu; adapter: EditorAdapter }) {
-  const options: { id: "list" | "cards" | "gallery"; title: string; desc: string; preview: React.ReactNode }[] = [
+  const options: { id: "list" | "cards" | "gallery" | "elegant"; title: string; desc: string; preview: React.ReactNode }[] = [
     {
       id: "list",
       title: "List",
-      desc: "Compact rows, dotted leader, single column.",
+      desc: "Compact rows, dotted leader.",
       preview: <PreviewList />,
     },
     {
@@ -413,8 +422,14 @@ function LayoutPicker({ menu, adapter }: { menu: EditorMenu; adapter: EditorAdap
     {
       id: "gallery",
       title: "Gallery",
-      desc: "Full-width hero images, one per row.",
+      desc: "Full-width hero images.",
       preview: <PreviewGallery />,
+    },
+    {
+      id: "elegant",
+      title: "Elegant",
+      desc: "Image left, name+price stacked, divider rows.",
+      preview: <PreviewElegant />,
     },
   ];
 
@@ -422,7 +437,7 @@ function LayoutPicker({ menu, adapter }: { menu: EditorMenu; adapter: EditorAdap
     <div>
       <label className="text-xs font-medium text-muted">Layout style</label>
       <p className="mt-0.5 text-xs text-dim">How items appear on the public menu.</p>
-      <div className="mt-3 grid grid-cols-3 gap-2">
+      <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-4">
         {options.map((opt) => {
           const active = menu.layout_style === opt.id;
           return (
@@ -472,6 +487,17 @@ const PreviewGallery = () => (
   <svg viewBox="0 0 80 50" className="h-12 w-full">
     <rect x="6" y="5" width="68" height="18" rx="2" fill="#444" />
     <rect x="6" y="27" width="68" height="18" rx="2" fill="#444" />
+  </svg>
+);
+const PreviewElegant = () => (
+  <svg viewBox="0 0 80 50" className="h-12 w-full">
+    <rect x="6" y="8" width="14" height="14" rx="3" fill="#444" />
+    <rect x="24" y="9" width="24" height="3" fill="#888" />
+    <rect x="24" y="15" width="14" height="3" fill="#bbb" />
+    <line x1="6" y1="24" x2="74" y2="24" stroke="#bbb" strokeWidth="0.5" />
+    <rect x="6" y="30" width="14" height="14" rx="3" fill="#444" />
+    <rect x="24" y="31" width="24" height="3" fill="#888" />
+    <rect x="24" y="37" width="14" height="3" fill="#bbb" />
   </svg>
 );
 

@@ -12,9 +12,10 @@ create table if not exists public.menus (
   cover_image_url text,
   cover_images text[] not null default '{}',  -- slideshow images
   background_image_url text,
-  layout_style text default 'cards',          -- 'list' | 'cards' | 'gallery'
-  accent_color text default '#C99852',        -- pill + price color
+  layout_style text default 'cards',          -- 'list' | 'cards' | 'gallery' | 'elegant'
+  accent_color text default '#C99852',        -- pill + price color (unused now, kept for future)
   published boolean not null default true,    -- if false, public page is hidden
+  show_menu_name boolean not null default true, -- show the menu title in the header
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
@@ -86,3 +87,4 @@ create policy "auth write products"   on public.products   for all to authentica
 -- alter table public.menus      add column if not exists cover_images text[] not null default '{}';
 -- alter table public.menus      add column if not exists accent_color text default '#C99852';
 -- alter table public.menus      add column if not exists published boolean not null default true;
+-- alter table public.menus      add column if not exists show_menu_name boolean not null default true;

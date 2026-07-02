@@ -6,24 +6,24 @@
 
 html, body { height: 100%; }
 body {
-  background: #0A0A0A;
-  color: #FFFFFF;
+  background: #FAFAFA;
+  color: #111827;
   font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-::selection { background: #2A2A2A; color: #fff; }
+::selection { background: #E5E7EB; color: #111827; }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #222; border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
-::-webkit-scrollbar-thumb:hover { background: #333; background-clip: padding-box; border: 2px solid transparent; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: #9CA3AF; background-clip: padding-box; border: 2px solid transparent; }
 
 @layer components {
   /* Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-canvas transition hover:bg-white/90 active:scale-[.98] disabled:opacity-40 disabled:pointer-events-none;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-800 active:scale-[.98] disabled:opacity-40 disabled:pointer-events-none;
   }
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-surface px-4 py-2 text-sm font-medium text-fg transition hover:border-focus hover:bg-elevated active:scale-[.98] disabled:opacity-40 disabled:pointer-events-none;
@@ -32,7 +32,7 @@ body {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-muted transition hover:bg-elevated hover:text-fg disabled:opacity-40 disabled:pointer-events-none;
   }
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-muted transition hover:border-red-900/50 hover:bg-red-950/20 hover:text-red-400 disabled:opacity-40 disabled:pointer-events-none;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-neutral-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:opacity-40 disabled:pointer-events-none;
   }
   .icon-btn {
     @apply inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted transition hover:bg-elevated hover:text-fg;

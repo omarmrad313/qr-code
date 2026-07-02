@@ -14,6 +14,7 @@ const menu: PublicMenu = {
     "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1600&h=900&fit=crop",
   layout_style: "cards",
   accent_color: "#C99852",
+  show_menu_name: true,
   categories: [
     {
       id: "starters",

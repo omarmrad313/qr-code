@@ -17,7 +17,7 @@ export type EditorCategory = {
   products: EditorProduct[];
 };
 
-export type LayoutStyle = "list" | "cards" | "gallery";
+export type LayoutStyle = "list" | "cards" | "gallery" | "elegant";
 
 export type EditorMenu = {
   id: string;
@@ -32,6 +32,7 @@ export type EditorMenu = {
   layout_style: LayoutStyle;
   accent_color: string;
   published: boolean;
+  show_menu_name: boolean;
   categories: EditorCategory[];
 };
 
@@ -41,7 +42,7 @@ export type Selection =
   | { type: "product"; id: string }
   | null;
 
-export type MenuPatch = Partial<Pick<EditorMenu, "name" | "name_ar" | "subtitle" | "subtitle_ar" | "layout_style" | "accent_color" | "published">>;
+export type MenuPatch = Partial<Pick<EditorMenu, "name" | "name_ar" | "subtitle" | "subtitle_ar" | "layout_style" | "accent_color" | "published" | "show_menu_name">>;
 export type CategoryPatch = Partial<Pick<EditorCategory, "name" | "name_ar">>;
 
 export interface EditorAdapter {

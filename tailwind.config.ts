@@ -5,14 +5,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: "#0A0A0A",
-        surface: "#111111",
-        elevated: "#161616",
-        line: "#222222",
-        focus: "#2A2A2A",
-        fg: "#FFFFFF",
-        muted: "#A1A1A1",
-        dim: "#6B6B6B",
+        // Light admin theme (public menu uses direct neutral-* classes so it's unaffected)
+        canvas: "#FAFAFA",   // page bg
+        surface: "#FFFFFF",  // card bg
+        elevated: "#F3F4F6", // hover / subtle
+        line: "#E5E7EB",     // borders
+        focus: "#9CA3AF",    // focus ring
+        fg: "#111827",       // primary text
+        muted: "#6B7280",    // secondary text
+        dim: "#9CA3AF",      // tertiary text
         gold: "#C99852",
         "gold-soft": "#D9B070",
       },

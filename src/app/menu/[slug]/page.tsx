@@ -61,6 +61,7 @@ export default async function PublicMenuPage({ params }: { params: { slug: strin
     background_image_url: m.background_image_url ?? null,
     layout_style: (m.layout_style as any) ?? "cards",
     accent_color: m.accent_color ?? "#C99852",
+    show_menu_name: m.show_menu_name ?? true,
     categories: cats
       .map<PublicCategory>((c) => ({
         id: c.id,

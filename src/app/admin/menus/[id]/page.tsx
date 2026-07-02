@@ -56,6 +56,7 @@ export default async function EditMenuPage({
     layout_style: (menu.layout_style as "list" | "cards" | "gallery") ?? "cards",
     accent_color: menu.accent_color ?? "#C99852",
     published: menu.published ?? true,
+    show_menu_name: menu.show_menu_name ?? true,
     categories: (categoriesRaw ?? []).map((c): EditorCategory => ({
       id: c.id,
       name: c.name,
