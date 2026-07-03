@@ -72,6 +72,18 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
   // Paused briefly after a pill click so the click's chosen state isn't
   // immediately overridden while smooth-scrolling.
   const lockUntil = useRef(0);
+  const navRef = useRef<HTMLDivElement | null>(null);
+  const pillRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  // Auto-scroll the pill bar horizontally so the active pill is centered
+  // when the user scrolls the page through a category off-screen.
+  useEffect(() => {
+    const nav = navRef.current;
+    const pill = activeCat ? pillRefs.current[activeCat] : null;
+    if (!nav || !pill) return;
+    const targetLeft = pill.offsetLeft - nav.clientWidth / 2 + pill.offsetWidth / 2;
+    nav.scrollTo({ left: Math.max(targetLeft, 0), behavior: "smooth" });
+  }, [activeCat]);
   useEffect(() => {
     const ids = cats.map((c) => `cat-${c.id}`);
     const observer = new IntersectionObserver(
@@ -142,6 +154,7 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
 
         {/* Category pills — sticky so they stay reachable while scrolling */}
         <nav
+          ref={navRef}
           className="sticky top-0 z-20 -mx-4 mt-5 overflow-x-auto bg-white/95 px-4 py-2 backdrop-blur md:-mx-6 md:px-6"
           style={{
             scrollbarWidth: "none",
@@ -155,6 +168,9 @@ export default function MenuClient({ menu }: { menu: PublicMenu }) {
               return (
                 <button
                   key={c.id}
+                  ref={(el) => {
+                    pillRefs.current[c.id] = el;
+                  }}
                   type="button"
                   onClick={() => {
                     setActiveCat(c.id);

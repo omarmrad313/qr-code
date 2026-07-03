@@ -311,7 +311,7 @@ function ProductRow({
         {...attributes}
         {...listeners}
         onClick={(e) => e.stopPropagation()}
-        className="icon-btn h-7 w-7 cursor-grab opacity-0 transition group-hover:opacity-100 active:cursor-grabbing"
+        className="icon-btn h-7 w-7 cursor-grab text-neutral-400 transition hover:text-neutral-700 active:cursor-grabbing"
         aria-label="Drag item"
       >
         <GripIcon />
