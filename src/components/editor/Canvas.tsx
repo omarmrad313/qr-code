@@ -296,35 +296,41 @@ function ProductRow({
     <li
       ref={setNodeRef}
       style={style}
-      {...getRootProps({
-        onClick: (e) => {
-          e.stopPropagation();
-          onSelect();
-        },
-        className: `group flex items-center gap-3 rounded-lg border px-3 py-2.5 transition cursor-pointer ${
-          selected ? "border-focus bg-elevated" : "border-line bg-surface hover:border-focus hover:bg-elevated"
-        } ${isDragActive ? "ring-1 ring-white/30" : ""}`,
-      })}
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelect();
+      }}
+      className={`group flex items-center gap-3 rounded-lg border px-3 py-2.5 transition cursor-pointer ${
+        selected ? "border-focus bg-elevated" : "border-line bg-surface hover:border-focus hover:bg-elevated"
+      } ${isDragging ? "z-10 shadow-lg" : ""}`}
     >
-      <input {...getInputProps()} />
       <button
         {...attributes}
         {...listeners}
         onClick={(e) => e.stopPropagation()}
-        className="icon-btn h-7 w-7 cursor-grab text-neutral-400 transition hover:text-neutral-700 active:cursor-grabbing"
+        onPointerDown={(e) => e.stopPropagation()}
+        className="icon-btn h-8 w-8 cursor-grab text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 active:cursor-grabbing touch-none"
         aria-label="Drag item"
+        title="Drag to reorder"
       >
         <GripIcon />
       </button>
 
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          open();
-        }}
-        className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-line bg-elevated"
-        title="Replace image"
+      {/* Image thumb — file dropzone lives here only, so it doesn't steal
+          the sortable ref from the <li>. */}
+      <div
+        {...getRootProps({
+          onClick: (e) => {
+            e.stopPropagation();
+            open();
+          },
+          className: `relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border ${
+            isDragActive ? "border-neutral-900 ring-2 ring-neutral-900" : "border-line"
+          } bg-elevated`,
+          title: "Drop or click to replace image",
+        })}
       >
+        <input {...getInputProps()} />
         {product.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={product.image_url} alt="" className="h-full w-full object-cover" />
@@ -333,7 +339,7 @@ function ProductRow({
             <UploadIcon size={14} />
           </div>
         )}
-      </button>
+      </div>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
